@@ -1,2 +1,6 @@
-<h1>Ini halaman detail</h1>
-<h3>Ini judul postnya @ViewBag.Title</h3>
+@model Post
+
+<h1>@Model.Title</h1>
+<p>@Model.Content</p>
+
+<p>@Model.CreatedDate.ToShortDateString()</p>
