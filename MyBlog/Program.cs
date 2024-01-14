@@ -1,4 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using MyBlog.Models;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connection = builder.Configuration.GetConnectionString("local");
+builder.Services.AddDbContext<AppDbContext>(o => {
+    o.UseMySql(connection, ServerVersion.AutoDetect(connection));
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
