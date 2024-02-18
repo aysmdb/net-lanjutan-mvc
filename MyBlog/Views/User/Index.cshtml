@@ -1,0 +1,27 @@
+@model List<User>
+<div class="card">
+    <div class="card-header">
+        <h3>List User</h3>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <tr>
+                <th>Username</th>
+                <th>Nama</th>
+                <th>Role</th>
+                <th>Aksi</th>
+            </tr>
+
+            @foreach(var i in Model){
+                <tr>
+                    <td>@i.Username</td>
+                    <td>@i.Name</td>
+                    <td>@i.Role</td>
+                    <td>
+                        <a href="detail/@i.Id" class="btn btn-primary" >Detail</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

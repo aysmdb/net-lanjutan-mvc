@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Models;
 
@@ -7,6 +8,11 @@ var connection = builder.Configuration.GetConnectionString("local");
 builder.Services.AddDbContext<AppDbContext>(o => {
     o.UseMySql(connection, ServerVersion.AutoDetect(connection));
 });
+
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme
+)
+.AddCookie();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -26,6 +32,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
