@@ -55,6 +55,10 @@ public class AccountController : Controller {
 
     [HttpPost]
     public async Task<IActionResult> Register([FromForm] User data){
+        if(!ModelState.IsValid){
+            return View(data);
+        }
+        
         _context.Add(data);
         await _context.SaveChangesAsync();
 

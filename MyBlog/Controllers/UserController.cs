@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Models;
@@ -17,8 +18,12 @@ public class UserController : Controller {
         return View(data);
     }
 
-    public async Task<IActionResult> Detail([FromQuery] int id){
+    public async Task<IActionResult> Detail(int id){
         var data = await _context.User.FirstOrDefaultAsync(x => x.Id == id);
+
+        var indoCulture = CultureInfo.GetCultureInfo("id-ID");
+
+        data.FormatTanggalLahir = data.TanggalLahir.ToString("d MMMM yyyy", indoCulture);
         return View(data);
     }
 }

@@ -1,3 +1,5 @@
+@model User
+
 <div class="card">
     <div class="card-header">
         <h3>Register</h3>
@@ -6,28 +8,52 @@
 
         <form method="post" action="Register">
             <label>Username</label>
-            <input type="text" name="Username" class="form-control" />
+            <input type="text" asp-for="Username" class="form-control" />
+            <div>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
 
             <label>Password</label>
-            <input type="password" name="Password" class="form-control" />
+            <input type="password" asp-for="Password" class="form-control" />
+            <div>
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
             <label>Nama</label>
-            <input type="text" name="Name" class="form-control" />
+            <input type="text" asp-for="Name" class="form-control" />
+            <div>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
 
             <label>Alamat</label>
-            <input type="text" name="Alamat" class="form-control" />
+            <input type="text" asp-for="Alamat" class="form-control" />
+            <div>
+                <span asp-validation-for="Alamat" class="text-danger"></span>
+            </div>
 
             <label>Email</label>
-            <input type="text" name="Email" class="form-control" />
+            <input type="text" asp-for="Email" class="form-control" />
+            <div>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
 
             <label>Telepon</label>
-            <input type="text" name="Telepon" class="form-control" />
+            <input type="text" asp-for="Telepon" class="form-control" />
+            <div>
+                <span asp-validation-for="Telepon" class="text-danger"></span>
+            </div>
 
             <label>Tanggal Lahir</label>
-            <input type="date" name="TanggalLahir" class="form-control" />
+            <input type="date" asp-for="TanggalLahir" class="form-control" />
+            <div>
+                <span asp-validation-for="TanggalLahir" class="text-danger"></span>
+            </div>
 
             <label>Role</label>
-            <input type="text" name="Role" class="form-control" />
+            <input type="text" asp-for="Role" class="form-control" />
+            <div>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
 
             <button type="submit" class="btn btn-primary">
                 Register
