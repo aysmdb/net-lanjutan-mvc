@@ -8,10 +8,15 @@ namespace MyBlog.Controllers;
 
 public class AccountController : Controller {
     private readonly AppDbContext _context;
+    private readonly IWebHostEnvironment _env;
 
-    public AccountController(AppDbContext context)
+    public AccountController(
+        AppDbContext context,
+        IWebHostEnvironment e
+        )
     {
         _context = context;
+        _env = e;
     }
 
     public IActionResult Login(){
@@ -54,12 +59,43 @@ public class AccountController : Controller {
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register([FromForm] User data){
+    public async Task<IActionResult> Register(
+        [FromForm] UserForm data,
+        IFormFile foto
+        ){
+
         if(!ModelState.IsValid){
             return View(data);
         }
+
+        var user = new User(){
+            Username = data.Username,
+            Name = data.Name,
+            Email = data.Email,
+            Telepon = data.Telepon,
+            Alamat = data.Alamat,
+            Role = data.Role,
+            Password = data.Password,
+            TanggalLahir = data.TanggalLahir,
+        };
+
+        if(foto != null){
+            var fileFolder = Path.Combine(_env.WebRootPath, "upload");
+
+            if(!Directory.Exists(fileFolder)){
+                Directory.CreateDirectory(fileFolder);
+            }
+
+            var fullFile = Path.Combine(fileFolder, foto.FileName);
+            
+            using(var stream = System.IO.File.Create(fullFile)){
+                await foto.CopyToAsync(stream);
+            }
+
+            user.Foto = foto.FileName;
+        }
         
-        _context.Add(data);
+        _context.Add(user);
         await _context.SaveChangesAsync();
 
         return RedirectToAction("Index", "Home");
