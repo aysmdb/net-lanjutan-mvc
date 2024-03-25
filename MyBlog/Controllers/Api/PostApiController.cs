@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MyBlog.Models;
 using MyBlog.Repositories;
+using MyBlog.Services;
 
 namespace MyBlog.Controllers;
 
@@ -10,16 +11,23 @@ namespace MyBlog.Controllers;
 public class PostApiController : ControllerBase
 {
     private readonly IPostRepository _repo;
+    private readonly IEmailService _email;
 
-    public PostApiController(IPostRepository r)
+    public PostApiController(IPostRepository r, IEmailService email)
     {
         _repo = r;
+        _email = email;
     }
 
     [HttpGet]
     [Route("get-all")]
     public IActionResult GetAllPost()
     {
+        _email.SendEmail(
+            "aysmdb@gmail.com",
+            "Registrasi Akun",
+            "Selamat registrasi akun anda berhasil"
+        );
         var post = _repo.GetAllPost();
 
         return Ok(post);

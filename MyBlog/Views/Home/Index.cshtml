@@ -5,4 +5,13 @@
 <div class="text-center">
     <h1 class="display-4">Welcome to the jungle</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a href="/post/excel" download class="btn btn-success">
+        Buat Excel
+    </a>
 </div>
+
+<form action="/post/uploadexcel" method="post"
+enctype="multipart/form-data">
+    <input type="file" name="excel" class="form-data" />
+    <button type="submit" class="btn btn-warning">Upload</button>
+</form>

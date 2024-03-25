@@ -1,5 +1,7 @@
+using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MiniExcelLibs;
 using MyBlog.Models;
 
 namespace MyBlog.Controllers;
@@ -8,12 +10,15 @@ namespace MyBlog.Controllers;
 public class PostController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly IWebHostEnvironment _env;
 
-    public PostController(AppDbContext c){
+    public PostController(AppDbContext c, IWebHostEnvironment env)
+    {
         _context = c;
+        _env = env;
     }
 
-    
+
     // GET
     public IActionResult Index(int page = 1)
     {
@@ -112,5 +117,70 @@ public class PostController : Controller
         }
 
         return posts;
+    }
+
+    [AllowAnonymous]
+    public async Task<IActionResult> Excel()
+    {
+        // var post = Enumerable.Range(1, 100).Select(
+        //     _ => new PostExcel {
+        //         Title = "Juduulll",
+        //         Content = "Konten Demo",
+        //         Likes = 123
+        //     });
+        var post = _context.Post.AsEnumerable();
+        var postExcel = post.Select(x => new PostExcel{
+            Title = x.Title,
+            Content = x.Content,
+            Likes = x.Likes
+        });
+
+        var user = _context.User.AsEnumerable();
+
+        var sheets = new Dictionary<string, object>
+        {
+            ["Data Post"] = postExcel,
+            ["Data User"] = user
+        };
+
+        var postForTemplate = new PostExcelTemplate 
+        {
+            Title = "Ini Judul Gede",
+            Post = postExcel
+        };
+
+        var path = Path.Combine(_env.WebRootPath, "demo export.xlsx");
+        var template = Path.Combine(_env.WebRootPath, "template.xlsx");
+
+        //simpan di folder
+        // MiniExcel.SaveAs(path, post);
+
+        //download
+        var stream = new MemoryStream();
+        // stream.SaveAs(postExcel, true, "Data Post");
+        // stream.SaveAs(sheets);
+        stream.SaveAsByTemplate(template, postForTemplate);
+        stream.Seek(0,SeekOrigin.Begin);
+
+        // return Ok("sukses brow");
+        return new FileStreamResult(stream, 
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            {
+                FileDownloadName = "download excel.xlsx"
+            };
+    }
+
+    [AllowAnonymous]
+    [HttpPost]
+    public async Task<IActionResult> UploadExcel(IFormFile excel)
+    {
+        var stream = new MemoryStream();
+        excel.CopyTo(stream);
+
+        var data = stream.Query<Post>("Data Post");
+        _context.Post.AddRange(data);
+        _context.SaveChanges();
+
+        return Ok("sukses brow");
     }
 }

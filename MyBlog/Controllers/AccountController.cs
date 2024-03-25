@@ -1,22 +1,31 @@
+using System.Net.Sockets;
 using System.Security.Claims;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using MimeKit.Text;
 using MyBlog.Models;
+using MyBlog.Services;
 
 namespace MyBlog.Controllers;
 
 public class AccountController : Controller {
     private readonly AppDbContext _context;
     private readonly IWebHostEnvironment _env;
+    private readonly IEmailService _email;
 
     public AccountController(
         AppDbContext context,
-        IWebHostEnvironment e
+        IWebHostEnvironment e,
+        IEmailService em
         )
     {
         _context = context;
         _env = e;
+        _email = em;
     }
 
     public IActionResult Login(){
@@ -95,6 +104,12 @@ public class AccountController : Controller {
             user.Foto = foto.FileName;
         }
         
+        _email.SendEmail(
+            data.Email,
+            "Registrasi Akun",
+            "Selamat registrasi akun anda berhasil"
+        );
+
         _context.Add(user);
         await _context.SaveChangesAsync();
 

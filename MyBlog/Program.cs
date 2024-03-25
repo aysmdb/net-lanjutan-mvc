@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using MyBlog.Models;
 using MyBlog.Repositories;
+using MyBlog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,11 @@ builder.Services.AddAuthentication(
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.Configure<EmailSetting>(
+    builder.Configuration.GetSection("EmailSetting"))
+.AddSingleton(o => o.GetRequiredService<IOptions<EmailSetting>>().Value);
 
 var app = builder.Build();
 
